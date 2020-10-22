@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App.vue'
-import SlideUpDown from 'vue-slide-up-down' //토글 슬라이드 다운 
+import router from './router'
+import vuetify from '@/plugins/vuetify' // path to vuetify export
 
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 
@@ -12,8 +13,8 @@ Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(IconsPlugin)
 
-Vue.component('slide-up-down', SlideUpDown)
-
 new Vue({
-  render: h => h(App),
+  vuetify,
+  router,
+  render: h => h(App)
 }).$mount('#app')
