@@ -1,10 +1,10 @@
 <!-- 회원가입 -->
 <template>
   <div class="signup">
-    <div class="top">
-        <h1>회원가입 페이지</h1>
-    </div>
     <v-container >
+      <div class="top">
+          <h1>회원가입 페이지</h1>
+      </div>
       <v-form ref="form" v-model="valid" lazy-validation>
         <v-row>
           <v-col cols="2">
@@ -36,7 +36,7 @@
         <!-- 비밀번호 -->
         <v-row>
           <v-col cols="2">
-            <v-subheader>Password2* </v-subheader>
+            <v-subheader>Password* </v-subheader>
           </v-col>
           <v-col cols="10">
             <v-text-field
@@ -87,8 +87,8 @@
             ></v-text-field>
           </v-col>
         </v-row>
-        <!-- 키,몸무게 -->
 
+        <!-- 생년월일 -->
         <v-row>
           <v-col cols="2">
             <v-subheader>Birthdy</v-subheader>
@@ -131,6 +131,7 @@
           <v-col cols="10">
             <v-text-field
               label="Email*"
+              v-model="form.email"
               required
             ></v-text-field>
           </v-col>
@@ -140,14 +141,14 @@
         <v-btn
           color="success"
           class="mr-4"
-          @click="validate"
+          @click="onSubmit"
           >
-          Validate
+          Submit
         </v-btn>
         <v-btn
           color="error"
           class="mr-4"
-          @click="reset"
+          @click="onReset"
           >
           Reset Form
         </v-btn>
@@ -156,10 +157,11 @@
       </v-form>
     </v-container>
 
-    <!-- form 들어간거 확인 -->
+    <!-- form 들어간거 확인
     <b-card class="mt-3" header="Form Data Result">
       <pre class="m-0">{{ form }}</pre>
     </b-card>
+    -->
   </div>
 </template>
 
@@ -172,20 +174,45 @@
           id:'',
           pwd:'',
           email: '',
-          selected:'w',
-          birth:''
         },
         options:[
           {text:'여자', value:'w'},
           {text:'남자', value:'m'}
         ],
         value:[],
-        menu:false
+        menu:false,
+        users:[],
       }
     },
     methods: {
-      save (date) {
+      save (date) { //생년월일 저장
         this.$refs.menu.save(date)
+      },
+      onSubmit(evt) { //회원가입 저장
+        evt.preventDefault()
+
+        this.$http.post('/api/member/signUp', { 
+          form: this.form
+        })
+        .then((res) => {
+          if (res.data.success == true) {
+            alert(res.data.message);
+            this.$router.push('/login') 
+          }
+          if (res.data.success == false) {
+            alert(res.data.message);
+          }
+        })
+        
+        alert(JSON.stringify(this.form))
+      },
+      onReset(evt) {  //reset form 
+        evt.preventDefault()
+        
+        this.form = {}
+        this.$nextTick(() => {
+          this.show = true
+        })
       },
     },
     watch: {
@@ -200,7 +227,7 @@
       availableOptions() {
         return this.options.filter(opt => this.value.indexOf(opt) === -1)
       }
-    }
+    },
   }
 </script>
 
